@@ -65,6 +65,7 @@ VALUES ('Caja de ahorro', 10000.00, 1),
 		('Cuenta sueldo', 54900.00, 6),
 		('Cuenta sueldo' , 39675.00 , 7);
 
+Los procedimientos son los análogos de las funciones en python, hechos en SQL SERVER. Donde se utilizaría el comando def y seguido del bloque de código para construir la función a ejecutar en python, en SQL SERVER se utiliza la sintaxis CREATE PROC, definiendo los campos y su tipo como variables usando el símbolo @.
 Se crea el procedimiento de AgregarCliente mediante las siguientes sintaxis:
 
 CREATE PROC AgregarCliente
@@ -90,4 +91,67 @@ Utilizando el procedimiento creado AgregarCliente y por medio de la cláusula EX
 EXEC AgregarCliente 'Leon','Barbas','8980-1533','Calle Golondrina 765';
 
 De esta forma se crea un nuevo registro de manera más simplificada.
+
+Se realiza el mismo trabajo, creando un procedimiento para ingresar un registro en la tabla Cuenta:
+
+CREATE PROC CrearCuenta
+	@tipo_cuenta VARCHAR(20),
+	@balance DECIMAL (10,2),
+	@ID_cliente INT
+AS
+BEGIN
+	INSERT INTO Cuenta(tipo_cuenta, balance, ID_cliente)
+	VALUES (@tipo_cuenta, @balance, @ID_cliente);
+END;
+
+De esta forma, solo se tiene que ejecutar el procedimiento CrearCuenta, utilizando una sintaxis más simplificada:
+
+EXEC CrearCuenta 'Caja de ahorro', 3000.00, 9;
+
+Se crea un procedimiento para ingresar nuevos registros en la tabla Transacciones. 
+
+CREATE PROC transaccion
+		@tipo_transaccion VARCHAR(20),
+		@cantidad DECIMAL (10,2),
+		@ID_cuenta INT --no hace falta poner la fecha, ya que no es una variable que vaya a insertar
+AS
+BEGIN
+	INSERT INTO Transacciones(tipo_transaccion, cantidad, fecha_transaccion, ID_cuenta)
+	VALUES (@tipo_transaccion, @cantidad, GETDATE(), @ID_cuenta); --poniendo directamente el getdate, obtengo la fecha actual
+END;
+
+Los Triggers son "disparadores" que actuan si ocurre un evento. Su objetivo es automatizar procesos dentro de la base de datos. Por ejemplo, se crea el siguiente Trigger:
+
+CREATE TRIGGER ActualizarBalance
+ON Transacciones
+AFTER INSERT
+AS
+BEGIN
+	UPDATE Cuenta
+	SET balance = balance + inserted.cantidad
+	FROM Cuenta
+	INNER JOIN inserted ON Cuenta.ID_cuenta = inserted.ID_cuenta;
+END;
+
+La sección del Trigger
+
+CREATE TRIGGER ActualizarBalance
+ON Transacciones
+AFTER INSERT
+AS
+BEGIN
+
+define el nombre del trigger, "ActualizarBalance", y la tabla en donde se va a aplicar, en este caso Transacciones, y este se activará luego de que se inserte un nuevo registro en dicha tabla.
+
+UPDATE Cuenta
+Este apartado define qué se hará una vez que se inserte un registro en Transacciones. En este caso se actualizará la tabla Cuenta.
+
+SET balance = balance + inserted.cantidad
+	FROM Cuenta
+INNER JOIN inserted ON Cuenta.ID_cuenta = inserted.ID_cuenta;
+END;
+
+El campo a actualizar es el "balance". La tabla "inserted" es una "tabla" temporal en donde se almacena un registro insertado a partir de la ejecución de un procedimiento. En este caso el registro insertado es el de "cantidad" de la tabla Transacciones. A continuacion se procede a sumar el valor insertado, en este caso una transacción del tipo Deposito, al balance actual, en la tabla Cuenta. Y para saber en cual balance actualizar el monto ingresado, se utiliza un INNER JOIN para comparar el valor de ID_cuenta insertado con el ID_cuenta de la tabla Cuenta.
+
+Por lo tanto, cada vez que se ejecute el procedimiento "transacción", este primero ingresará los valores insertados en la tabla Transacciones, mientras que el trigger tomará el valor del campo "cantidad" para actualizar el registro "balance" en la tabla Cuenta, utilizando el ID_cuenta para encontrar el registro correcto. 
 
