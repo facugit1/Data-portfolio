@@ -1,3 +1,5 @@
+# Sistema de gestión Bancaria
+
 El siguiente proyecto consiste en un sistema de gestión bancario, inspirado y adaptado del proyecto propuesto por la web [geeksforgeeks](https://www.geeksforgeeks.org/python/bank-management-system-using-python-mysql-connectivity/)
 
 El proyecto propuesto por la web adjunta arriba esta hecho con python y utilizando la libreria de mysql. Lo que me propuse fue adaptarlo a SQL Server, adaptando las funciones 
@@ -11,6 +13,37 @@ Para empezar, se realizó el siguiente diagrama ER para observar las tablas a tr
 
 En base al diagrama ER, se procede a la creación de la base de datos nombrada "Banco" y a las tablas necesarios.
 
-CREATE DATABASE Banco; --se crea la base de datos Banco
+CREATE DATABASE Banco;
 
 USE Banco;
+
+Una vez creada la base de datos, se procede a crear las tablas necesarias
+
+CREATE TABLE Clientes(
+	ID_cliente INT PRIMARY KEY IDENTITY (1,1) NOT NULL,
+	nombre  VARCHAR(50) NOT NULL,
+	apellido VARCHAR(50) NOT NULL,
+	telefono VARCHAR(20),
+	direccion VARCHAR (100)
+); 
+
+CREATE TABLE Cuenta(
+	ID_cuenta INT PRIMARY KEY IDENTITY (1,1) NOT NULL,	
+	tipo_cuenta VARCHAR(20),
+	balance DECIMAL(10,2),
+	ID_cliente INT NOT NULL
+	FOREIGN KEY(ID_cliente) REFERENCES Clientes(ID_cliente)
+);
+
+CREATE TABLE Transacciones(
+	ID_transaccion INT PRIMARY KEY IDENTITY (1,1) NOT NULL,
+	tipo_transaccion VARCHAR(20),
+	cantidad DECIMAL(10,2),
+	fecha_transaccion DATE,
+	ID_cuenta INT NOT NULL
+	FOREIGN KEY(ID_cuenta) REFERENCES Cuenta(ID_cuenta)
+);
+
+Con esto se crean las tablas y se definen sus claves primarias y claves foráneas, estas últimas para realizar consultas de mayor complejidad.
+
+
