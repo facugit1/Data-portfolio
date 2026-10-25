@@ -64,3 +64,30 @@ VALUES ('Caja de ahorro', 10000.00, 1),
 		('Caja de ahorro', 200000.00 , 5),
 		('Cuenta sueldo', 54900.00, 6),
 		('Cuenta sueldo' , 39675.00 , 7);
+
+Se crea el procedimiento de AgregarCliente mediante las siguientes sintaxis:
+
+CREATE PROC AgregarCliente
+		@nombre VARCHAR(50),
+		@apellido VARCHAR(50),
+		@telefono VARCHAR(20),
+		@direccion VARCHAR (100)
+AS
+BEGIN
+	INSERT INTO Clientes(nombre, apellido,telefono, direccion)
+	VALUES (@nombre, @apellido, @telefono, @direccion);
+END;
+
+A través de este procedimiento, se puede utilizar la cláusula EXEC "nombre del procedimiento" para agregar nuevos registros utilizando una sintaxis más sencilla. Por ejemplo:
+
+Se crea un nuevo cliente. La sintaxis de INSERT sería así:
+
+INSERT INTO Clientes(nombre, apellido, telefono, direccion)
+Values ('Leon', 'Barbas', '8980-1533', 'Calle Golondrina 765');
+
+Utilizando el procedimiento creado AgregarCliente y por medio de la cláusula EXEC, el comando a ejecutar sería el siguiente:
+
+EXEC AgregarCliente 'Leon','Barbas','8980-1533','Calle Golondrina 765';
+
+De esta forma se crea un nuevo registro de manera más simplificada.
+
