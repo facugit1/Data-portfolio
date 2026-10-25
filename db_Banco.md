@@ -45,5 +45,22 @@ CREATE TABLE Transacciones(
 );
 
 Con esto se crean las tablas y se definen sus claves primarias y claves foráneas, estas últimas para realizar consultas de mayor complejidad.
+Se ingresaron registros mediante la clausula INSERT INTO en las tablas Cliente y Cuenta.
 
+INSERT INTO Clientes(nombre, apellido, telefono, direccion)
+Values ('Nahuel', 'Torrez', '4202-4447', 'Avenida de los Corrales 1985')
+		('Roberto', 'Torres', '4234-4567', 'Avenida del Pairo 87'),
+		('Ceferino' , 'Namuncu' , '4356-1234' , 'Laprida 234'),
+		('Alfonso','Rodriguez','2234-4567','Peña 36'),
+		('Casandra','Clare','5678-4732','Poncho 452'),
+		('Luisiana','Lopez','9847-3754','Rossi 7345'),
+		('Mario','Rojas','87399-0013','Jujuy 23');
 
+INSERT INTO Cuenta(tipo_cuenta, balance, ID_cliente)
+VALUES ('Caja de ahorro', 10000.00, 1),
+		('Cuenta Sueldo', 5000.00,2),
+		('Cuenta Corriente', 12000.00, 3),
+		('Cuenta Corriente', 4500.00, 4),
+		('Caja de ahorro', 200000.00 , 5),
+		('Cuenta sueldo', 54900.00, 6),
+		('Cuenta sueldo' , 39675.00 , 7);
